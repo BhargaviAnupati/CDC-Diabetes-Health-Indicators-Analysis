@@ -1,6 +1,12 @@
 # Diabetes Risk Prediction — CDC Diabetes Health Indicators
 
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
+
 Predicting diabetes/prediabetes risk from CDC health survey data using exploratory analysis and machine learning.
+
+**Author:** [Bhargavi Anupati](https://github.com/BhargaviAnupati) · [LinkedIn](https://www.linkedin.com/in/bhargavi-r-9667b4231/)
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -122,8 +128,8 @@ diabetes-risk-prediction/
 
 ```bash
 # Clone the repo
-git clone https://github.com/<your-username>/diabetes-risk-prediction.git
-cd diabetes-risk-prediction
+git clone https://github.com/BhargaviAnupati/CDC-Diabetes-Health-Indicators-Analysis.git
+cd CDC-Diabetes-Health-Indicators-Analysis
 
 # Install dependencies
 pip install -r requirements.txt
@@ -137,6 +143,9 @@ streamlit run app/app.py
 
 ## Key Takeaways
 
+*(This is the section most recruiters and interviewers will actually read — plain-English,
+no code. Fill in the bracketed placeholders once each analysis step is finalized.)*
+
 - The dataset is meaningfully imbalanced toward non-diabetic respondents ([X]% vs [Y]%), which
   meant accuracy alone would be a misleading metric — precision, recall, F1, and ROC-AUC were
   used instead throughout this project.
@@ -147,6 +156,10 @@ streamlit run app/app.py
   converged even further (F1: 0.447–0.453), indicating the models had reached a similar
   predictive ceiling given the available features rather than one architecture being clearly
   superior.
+- **[LightGBM/CatBoost/SMOTE results, if completed]:** [SUMMARY — e.g. "Adding LightGBM to the
+  comparison yielded [BETTER / SIMILAR / WORSE] performance (F1: [VALUE]), confirming/challenging
+  the pattern seen above." / "SMOTE resampling changed precision/recall to [VALUES], compared to
+  [BETTER / WORSE] than class weighting."]
 - **Final model selected:** [MODEL NAME], chosen because [REASONING — e.g. "narrow edge in
   precision/F1 at matched recall, plus strong compatibility with SHAP interpretation"].
 - **Top predictive features (from SHAP):** [FEATURE 1], [FEATURE 2], [FEATURE 3] — [describe
@@ -207,6 +220,9 @@ above for the full explanation].
 
 ## Author
 
-[Your Name]
-[LinkedIn URL]
-[Portfolio site URL]
+**Bhargavi Anupati**
+[LinkedIn](https://www.linkedin.com/in/bhargavi-r-9667b4231/) · [GitHub](https://github.com/BhargaviAnupati)
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
