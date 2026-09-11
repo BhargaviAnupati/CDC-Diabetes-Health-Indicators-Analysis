@@ -2,13 +2,25 @@
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
+![Status](https://img.shields.io/badge/Status-Core%20Analysis%20Complete-brightgreen)
 
-Predicting diabetes/prediabetes risk from CDC health survey data using exploratory analysis and machine learning.
+Predicting diabetes/prediabetes risk from CDC health survey data using exploratory analysis and
+machine learning.
 
 **Author:** [Bhargavi Anupati](https://github.com/BhargaviAnupati) · [LinkedIn](https://www.linkedin.com/in/bhargavi-r-9667b4231/)
 
+## Results at a Glance
+
+**XGBoost achieved a ROC-AUC of 0.815 across 253,680 patient records.** The single strongest
+predictor of diabetes risk was self-rated general health, followed by high blood pressure, age,
+BMI, and high cholesterol — a ranking that lines up well with established clinical risk factors.
+
+| Top drivers of predicted risk (SHAP) | Direction of effect (SHAP beeswarm) |
+|---|---|
+| ![SHAP feature importance](reports/shap_feature_importance.png) | ![SHAP beeswarm](reports/shap_beeswarm.png) |
+
 ## Table of Contents
+- [Results at a Glance](#results-at-a-glance)
 - [Project Overview](#project-overview)
 - [Dataset](#dataset)
 - [Methods](#methods)
@@ -63,34 +75,25 @@ help a clinic or public health program prioritize outreach and screening for at-
    - Stratified train/test split (80/20) performed before any scaling, to avoid data leakage
    - Standard scaling applied to continuous features (BMI, MentHlth, PhysHlth, Age, Education, Income), fit on train only
    - Most features were already binary/ordinal and required no additional encoding
-   - *(If completed)* Interaction/binned features tested: [DESCRIBE FEATURES TESTED], impact on
-     performance: [IMPROVED / NO CHANGE / DEGRADED — with metric delta]
 
 4. **Modeling** ✅
    - **Baseline:** Logistic Regression with `class_weight='balanced'`
    - **Comparison models:** Random Forest (`class_weight='balanced'`), XGBoost (`scale_pos_weight`)
-   - *(If completed)* Additional models tested: [LightGBM / CatBoost — list any added]
    - Class imbalance addressed via class weighting
-   - *(If completed)* Resampling comparison: SMOTE vs. class weighting — [SUMMARY OF RESULT]
 
 5. **Evaluation** ✅
-   - Precision, recall, F1-score, ROC-AUC compared across all models at the default 0.5 threshold
-   - **Matched-recall comparison:** thresholds adjusted per model so all are compared at equal
-     recall (~77.5%) — isolates precision differences from threshold effects
-   - Confusion matrix and ROC curve analysis, with a focus on minimizing false negatives (missed
-     at-risk patients)
+   - Precision, recall, F1-score, ROC-AUC compared across all three models at the default 0.5 threshold
+   - **Matched-recall comparison:** thresholds adjusted per model so all three are compared at equal recall (~77.5%) — isolates precision differences from threshold effects
+   - Confusion matrix and ROC curve analysis, with a focus on minimizing false negatives (missed at-risk patients)
 
-6. **Interpretation** 🔄
-   - Feature importance rankings (from Logistic Regression coefficients and tree-based importances)
-   - SHAP values (global summary, beeswarm, waterfall, and dependence plots) computed for the
-     final model: [MODEL NAME]
+6. **Interpretation** ✅
+   - SHAP global feature importance, beeswarm (direction of effect), and individual prediction
+     waterfall plots (one high-risk, one low-risk example) for the final XGBoost model
 
 7. **Deployment** — planned
    - Streamlit app for interactive risk prediction based on user-input health indicators
-   - App link (once deployed): [STREAMLIT APP URL]
 
-8. **Write-up** — planned
-   - Plain-English summary for non-technical audiences: [LINK TO BLOG POST / REPORT, IF CREATED]
+8. **Write-up** ✅ — this README
 
 ## Tech Stack
 
@@ -99,9 +102,9 @@ help a clinic or public health program prioritize outreach and screening for at-
 | Language | Python |
 | Data handling | pandas, numpy (`<2` — see note below) |
 | Visualization | matplotlib, seaborn |
-| Modeling | scikit-learn, XGBoost[, LightGBM / CatBoost if added] |
+| Modeling | scikit-learn, XGBoost |
 | Interpretation | SHAP |
-| Deployment | Streamlit |
+| Deployment | Streamlit (planned) |
 | Environment | Jupyter Lab |
 
 > **Note:** `numpy<2` is pinned in `requirements.txt` to avoid a binary-compatibility conflict
@@ -118,7 +121,7 @@ diabetes-risk-prediction/
 │   ├── 01_data_loading_and_eda.ipynb                    ✅ complete
 │   ├── 02_feature_engineering_and_baseline_model.ipynb  ✅ complete
 │   ├── 03_model_comparison_and_evaluation.ipynb         ✅ complete
-│   └── 04_model_interpretation_shap.ipynb               🔄 in progress
+│   └── 04_model_interpretation_shap.ipynb               ✅ complete
 ├── src/                                         # reusable functions for cleaning/modeling
 ├── app/                                         # Streamlit deployment app
 └── reports/                                     # figures and write-up assets
@@ -143,34 +146,30 @@ streamlit run app/app.py
 
 ## Key Takeaways
 
-*(This is the section most recruiters and interviewers will actually read — plain-English,
-no code. Fill in the bracketed placeholders once each analysis step is finalized.)*
-
-- The dataset is meaningfully imbalanced toward non-diabetic respondents ([X]% vs [Y]%), which
-  meant accuracy alone would be a misleading metric — precision, recall, F1, and ROC-AUC were
-  used instead throughout this project.
+- The dataset is meaningfully imbalanced toward non-diabetic respondents, which meant accuracy
+  alone would be a misleading metric — precision, recall, F1, and ROC-AUC were used instead
+  throughout this project.
 - At default thresholds, Logistic Regression, Random Forest, and XGBoost all performed within a
-  narrow band of each other (ROC-AUC 0.811–0.816), suggesting the signal in this dataset is
-  largely linear and that model complexity alone offers limited additional lift.
-- When compared at a matched recall of ~77.5% (rather than default thresholds), all three models
-  converged even further (F1: 0.447–0.453), indicating the models had reached a similar
-  predictive ceiling given the available features rather than one architecture being clearly
-  superior.
-- **[LightGBM/CatBoost/SMOTE results, if completed]:** [SUMMARY — e.g. "Adding LightGBM to the
-  comparison yielded [BETTER / SIMILAR / WORSE] performance (F1: [VALUE]), confirming/challenging
-  the pattern seen above." / "SMOTE resampling changed precision/recall to [VALUES], compared to
-  [BETTER / WORSE] than class weighting."]
-- **Final model selected:** [MODEL NAME], chosen because [REASONING — e.g. "narrow edge in
-  precision/F1 at matched recall, plus strong compatibility with SHAP interpretation"].
-- **Top predictive features (from SHAP):** [FEATURE 1], [FEATURE 2], [FEATURE 3] — [describe
-  direction of effect, e.g. "higher BMI and poor self-rated general health both pushed
-  predictions toward higher risk"].
-- **Notable interactions/surprises from SHAP dependence plots:** [DESCRIBE ANY INTERACTION
-  EFFECTS FOUND, OR STATE "none of particular note" IF NOT APPLICABLE].
-- **Practical implication:** [ONE SENTENCE ON WHAT THIS MEANS FOR A REAL-WORLD USE CASE — e.g.
-  "A screening tool using this model could flag roughly [X]% of at-risk individuals while
-  requiring follow-up on [Y]% of the overall population, a trade-off that would need to be
-  validated with a clinical stakeholder before deployment."]
+  narrow band of each other (ROC-AUC 0.811–0.816). When compared at a matched recall of ~77.5%
+  instead, all three converged even further (F1: 0.447–0.453), indicating the models reached a
+  similar predictive ceiling given the available features rather than one architecture being
+  clearly superior.
+- **Final model selected: XGBoost**, for its narrow edge in precision/F1 at matched recall and
+  strong compatibility with SHAP-based interpretation.
+- **Top predictive features (from SHAP):** self-rated general health was the single strongest
+  driver of predicted risk, followed by high blood pressure, age, BMI, and high cholesterol —
+  a ranking that lines up well with established clinical diabetes risk factors. Higher values of
+  each (worse self-rated health, having high BP, older age, higher BMI, having high cholesterol)
+  consistently pushed predictions toward higher risk.
+- **One notable, counterintuitive finding:** heavy alcohol consumption was associated with
+  *lower* predicted risk in the SHAP analysis. This is a known pattern in this dataset rather
+  than a modeling error — it likely reflects a "healthy drinker" confounding effect (heavy
+  drinkers in survey data skew younger and healthier on other dimensions) rather than alcohol
+  itself being protective. Worth stating explicitly rather than over-interpreting.
+- **Practical implication:** a screening tool using this model could flag a substantial share of
+  at-risk individuals based on easily self-reported indicators (general health rating, blood
+  pressure, age, BMI, cholesterol) without requiring lab work, though any real deployment would
+  need clinical validation given the survey-based, non-diagnostic nature of the underlying data.
 
 ## Model Performance
 
@@ -181,7 +180,6 @@ no code. Fill in the bracketed placeholders once each analysis step is finalized
 | Logistic Regression | 0.318 | 0.760 | 0.449 | 0.811 |
 | Random Forest | 0.334 | 0.743 | 0.461 | 0.816 |
 | XGBoost | 0.320 | 0.775 | 0.453 | 0.815 |
-| [LightGBM/CatBoost, if added] | [ ] | [ ] | [ ] | [ ] |
 
 **At matched recall (~77.5%)** — thresholds adjusted per model so recall is held constant,
 isolating true precision differences from threshold effects:
@@ -191,10 +189,10 @@ isolating true precision differences from threshold effects:
 | Logistic Regression | 0.488 | 0.314 | 0.775 | 0.447 |
 | Random Forest | 0.473 | 0.319 | 0.775 | 0.452 |
 | XGBoost | 0.500 | 0.320 | 0.775 | 0.453 |
-| [LightGBM/CatBoost, if added] | [ ] | [ ] | [ ] | [ ] |
 
-**Selected model: [XGBoost — update if this changes].** [REASONING SUMMARY — see Key Takeaways
-above for the full explanation].
+**Selected model: XGBoost.** At matched recall, all three models perform nearly identically,
+with XGBoost holding a narrow edge in precision and F1. Given the near-tie, the deciding factors
+were this small edge plus XGBoost's strong compatibility with SHAP for model interpretation.
 
 ## Limitations
 
@@ -207,16 +205,17 @@ above for the full explanation].
 - All three core models converged on a similar performance ceiling (~0.81–0.82 ROC-AUC),
   suggesting that further gains are more likely to come from better features or external data
   than from additional algorithms.
+- The counterintuitive heavy-alcohol-consumption finding is a good reminder that SHAP explains
+  what the model learned, not necessarily true causal relationships in the real world.
 
 ## Next Steps
 
 - [x] Complete EDA and document key findings
 - [x] Engineer features and build baseline model
 - [x] Train and compare additional models
-- [ ] Generate SHAP interpretation plots and fill in Key Takeaways
-- [ ] *(Optional)* Test SMOTE resampling and/or LightGBM as additional comparisons
+- [x] Generate SHAP interpretation plots and document findings
 - [ ] Build and deploy Streamlit app
-- [ ] Write up plain-English summary for non-technical audiences
+- [x] Write up plain-English summary for non-technical audiences
 
 ## Author
 
